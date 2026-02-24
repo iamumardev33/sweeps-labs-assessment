@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useData } from '../state/DataContext';
+import { useItems } from '../hooks/useItems';
 import { Link } from 'react-router-dom';
 import { FixedSizeList as List } from 'react-window';
 
 function Items() {
-  const { items, fetchItems, loading, error } = useData();
+  const { items, fetchItems, loading, error } = useItems();
   const [query, setQuery] = useState('');
   const [offset, setOffset] = useState(0);
   const LIMIT = 50;
