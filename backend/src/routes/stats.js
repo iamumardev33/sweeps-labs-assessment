@@ -1,6 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const { mean } = require('../utils/stats');
 const router = express.Router();
 const DATA_PATH = path.join(__dirname, '../../data/items.json');
 
@@ -24,9 +25,10 @@ router.get('/', async (req, res, next) => {
     const items = JSON.parse(raw);
     
     // Calculate stats
+    const prices = items.map(item => item.price);
     const stats = {
       total: items.length,
-      averagePrice: items.reduce((acc, cur) => acc + cur.price, 0) / items.length
+      averagePrice: items.length ? mean(prices) : 0
     };
     
     cachedStats = stats;
