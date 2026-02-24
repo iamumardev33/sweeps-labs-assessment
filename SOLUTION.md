@@ -27,3 +27,19 @@
 ### Frontend (React)
 1. **Custom Hook Extrication**: Migrated monolithic data-fetching, pagination states (`offset`, `limit`), query parsing (`q`), error capturing, and AbortController invocation out of `DataContext.js` and component files into a singular, highly decoupled `useItems.js` custom hook.
 2. **Separation of Concerns**: `Items.js` transitioned from an ugly state/side-effect manager into a pure presentation view, relying strictly on cleanly destructured API methods (`{ items, fetchItems, loading, error }`) sourced directly from our pristine `useItems` layer.
+
+## Phase 4 Summary: Final Code Quality Refinements
+
+### Frontend (React)
+1. **Environment Variables**: Completely removed hardcoded backend localhost API routes strings from the application. Both `useItems.js` and `useItemDetail.js` now rely safely on `process.env.REACT_APP_API_URL` populated securely from `.env`.
+2. **Atomic UI Componentization**: Instead of using raw HTML elements, standardized generic, reusable UI layer components (`Button.js` and `Input.js`) were abstracted into a `components/ui` folder. Similarly, the feature-specific row markup inside `Items.js` was extracted into `components/items/ItemRow.js`.
+3. **`useDebounce` Hook**: Added `useDebounce.js` intercepting the global search `query` inside `/items`. This protects the backend API from being aggressively DDOSed by restricting payload processing to 500ms bursts during heavy typing sessions.
+4. **`ItemDetail` Encapsulation**: Paralleling `useItems.js`, the native logic tying React Router's URL params to HTTP fetches was extracted from `ItemDetail.js` completely into `useItemDetail.js`.
+
+### Backend (Node.js)
+1. **SQLi Mentions**: In anticipation of eventually transitioning off of brute-force JSON manipulation, explicit backend warning comments were left in `itemsController` around parameterizing the `q` value to warn developers of SQL Injection if transitioning to a relational DB.
+
+## Phase 5 Summary: Production Readiness
+1. **Security & Data Integrty**: Untracked the committed `.env` file from git history to ensure secrets are isolated, and placed both `.env` and the `data/` directory into `backend/.gitignore`. 
+2. **CORS & Headers**: Switched hardcoded `http://localhost:3000` CORS rules to a dynamic whitelist parser tied to `CORS_ORIGIN` inside `.env`. Added the `helmet` package to the middleware stack, which guarantees strict production HTTP headers defending against standard web vulnerabilities (e.g. Content-Security-Policy injection, X-Frame-Options clickjacking).
+3. **Build & Middleware**: Inserted a `build` alias into `package.json`. Maintained the `morgan` middleware - a standard industrial HTTP request logger that provides crucial terminal visibility into server routing, payloads, and response times in prod.

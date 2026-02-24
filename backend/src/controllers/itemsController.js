@@ -15,6 +15,10 @@ exports.getAllItems = catchAsync(async (req, res, next) => {
   const { limit, offset, q } = req.query;
   let results = data;
 
+  // SECURITY NOTE: If migrating from `JSON.filter` to a real SQL database (e.g. Postgres), 
+  // ensure that the `q` parameter is properly sanitized or parameterized. 
+  // DO NOT concatenate `q` directly into raw SQL queries, as it will expose the application 
+  // to SQL Injection vulnerabilities. Use an ORM or parameterized queries (e.g., `WHERE name LIKE $1`).
   if (q) {
     results = results.filter(item => item.name.toLowerCase().includes(q.toLowerCase()));
   }

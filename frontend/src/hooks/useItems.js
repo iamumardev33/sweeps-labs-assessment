@@ -9,7 +9,7 @@ export const useItems = () => {
     setLoading(true);
     setError(null);
     try {
-      const url = new URL('http://localhost:3001/api/items');
+      const url = new URL(`${process.env.REACT_APP_API_URL}/items`);
       if (params.limit) url.searchParams.append('limit', params.limit);
       if (params.offset) url.searchParams.append('offset', params.offset);
       if (params.q) url.searchParams.append('q', params.q);
