@@ -1,8 +1,6 @@
-import React, { createContext, useCallback, useContext, useState } from 'react';
+import { useState, useCallback } from 'react';
 
-const DataContext = createContext();
-
-export function DataProvider({ children }) {
+export const useItems = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -11,7 +9,7 @@ export function DataProvider({ children }) {
     setLoading(true);
     setError(null);
     try {
-      const url = new URL('http://localhost:3001/api/items');
+      const url = new URL(`${process.env.REACT_APP_API_URL}/items`);
       if (params.limit) url.searchParams.append('limit', params.limit);
       if (params.offset) url.searchParams.append('offset', params.offset);
       if (params.q) url.searchParams.append('q', params.q);
@@ -31,11 +29,5 @@ export function DataProvider({ children }) {
     }
   }, []);
 
-  return (
-    <DataContext.Provider value={{ items, fetchItems, loading, error }}>
-      {children}
-    </DataContext.Provider>
-  );
-}
-
-export const useData = () => useContext(DataContext);
+  return { items, fetchItems, loading, error };
+};

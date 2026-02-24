@@ -1,19 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { useParams } from 'react-router-dom';
+import { useItemDetail } from '../hooks/useItemDetail';
 
 function ItemDetail() {
   const { id } = useParams();
-  const [item, setItem] = useState(null);
-  const navigate = useNavigate();
+  const { item, loading, error } = useItemDetail(id);
 
-  useEffect(() => {
-    fetch('/api/items/' + id)
-      .then(res => res.ok ? res.json() : Promise.reject(res))
-      .then(setItem)
-      .catch(() => navigate('/'));
-  }, [id, navigate]);
-
-  if (!item) return <p>Loading...</p>;
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p style={{color: 'red'}}>Error: {error}</p>;
+  if (!item) return null;
 
   return (
     <div style={{padding: 16}}>
